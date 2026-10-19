@@ -4,7 +4,13 @@ import {
   Settings,
   Sparkles,
   Key,
-  Plus
+  Plus,
+  PanelLeft,
+  Image as ImageIcon,
+  Video,
+  AudioLines,
+  Boxes,
+  Folder
 } from 'lucide-react';
 import {
   AI_PROVIDERS,
@@ -21,6 +27,8 @@ const NAV_CATEGORIES = [
   { id: 'audio', label: 'Audio', defaultModel: 'cosyvoice-v1' }
 ];
 
+const SIDEBAR_ICONS = { image: ImageIcon, video: Video, audio: AudioLines };
+
 const TAG_CLASS = { TOP: 'hf-tag-top', NEW: 'hf-tag-new', FAST: 'hf-tag-fast' };
 const ICON_CLASS = { TOP: 'is-top', NEW: 'is-new', FAST: 'is-fast' };
 
@@ -34,7 +42,14 @@ export function Header({
   configuredRoles
 }) {
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const closeTimeoutRef = useRef(null);
+
+  // Mobile sidebar: close the panel, then run the nav action
+  const fromSidebar = (action) => () => {
+    setIsSidebarOpen(false);
+    action?.();
+  };
 
   // Track connected providers
   const [connectedProviders, setConnectedProviders] = useState(() => providersStorage.getConnectedProviders());
@@ -175,10 +190,41 @@ export function Header({
     );
   };
 
+  const providersLabel = connectedProviders.map(p => p.name).join(', ') || 'Alibaba Cloud';
+
   return (
+    <>
     <header className="hf-nav">
+      {/* ─── Mobile bar: sidebar toggle · logo · Import AI Provider ─── */}
+      <div className="lg:hidden relative flex items-center justify-between w-full">
+        <button
+          onClick={() => setIsSidebarOpen(true)}
+          className="hf-btn hf-icon-btn -ml-2 text-white/70 hover:text-white"
+          title="Open menu"
+          aria-label="Open menu"
+        >
+          <PanelLeft className="w-5 h-5" />
+        </button>
+
+        <button
+          onClick={() => setActiveTab('studio')}
+          className="absolute left-1/2 -translate-x-1/2"
+          title="PuhhfieldAi Studio"
+        >
+          <PuhhfieldLogo variant="icon" className="w-8 h-8" />
+        </button>
+
+        <button
+          onClick={() => setActiveTab('models')}
+          className="hf-btn hf-btn-solid h-8 px-3.5 rounded-full text-[13px]"
+        >
+          <Plus className="w-3.5 h-3.5 hidden min-[400px]:block" />
+          <span>Import AI Provider</span>
+        </button>
+      </div>
+
       {/* Left: Brand Logo & Navigation */}
-      <div className="flex items-center gap-3 min-w-0">
+      <div className="hidden lg:flex items-center gap-3 min-w-0">
         <button
           onClick={() => setActiveTab('studio')}
           className="shrink-0"
@@ -187,7 +233,7 @@ export function Header({
           <PuhhfieldLogo variant="icon" className="w-8 h-8" />
         </button>
 
-        <nav className="flex items-center min-w-0 overflow-x-auto no-scrollbar lg:overflow-visible">
+        <nav className="flex items-center min-w-0">
           <button
             onClick={() => {
               setActiveDropdown(null);
@@ -236,7 +282,7 @@ export function Header({
       </div>
 
       {/* Right side actions */}
-      <div className="flex items-center gap-2 shrink-0">
+      <div className="hidden lg:flex items-center gap-2 shrink-0">
         <button
           onClick={onToggleHistory}
           className="hf-btn hf-btn-soft hf-icon-btn relative"
@@ -282,5 +328,96 @@ export function Header({
         )}
       </div>
     </header>
+
+    {/* ─── Mobile sidebar (Higgsfield mobile menu) ─── */}
+    {isSidebarOpen && (
+      <div className="lg:hidden fixed inset-0 z-[150]">
+        <div
+          className="absolute inset-0 bg-black/60"
+          style={{ animation: 'fadeIn 0.15s ease' }}
+          onClick={() => setIsSidebarOpen(false)}
+        />
+
+        <aside className="hf-sidebar">
+          <div className="flex items-center justify-between h-[52px] pl-4 pr-2 shrink-0">
+            <button onClick={fromSidebar(() => setActiveTab('studio'))} title="PuhhfieldAi Studio">
+              <PuhhfieldLogo variant="full" className="w-7 h-7" textClassName="text-lg font-bold font-display" />
+            </button>
+            <button
+              onClick={() => setIsSidebarOpen(false)}
+              className="hf-btn hf-icon-btn text-white/70 hover:text-white"
+              title="Close menu"
+              aria-label="Close menu"
+            >
+              <PanelLeft className="w-5 h-5" />
+            </button>
+          </div>
+
+          <nav className="flex-1 overflow-y-auto px-1 pt-3 pb-4">
+            <button onClick={fromSidebar(() => setActiveTab('studio'))} className="hf-sidebar-create">
+              <Plus />
+              <span>Create</span>
+            </button>
+
+            <div className="mt-1">
+              {NAV_CATEGORIES.map((cat) => {
+                const Icon = SIDEBAR_ICONS[cat.id];
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={fromSidebar(() => {
+                      setActiveTab('studio');
+                      onSelectModel?.(cat.defaultModel, cat.id);
+                    })}
+                    className="hf-sidebar-item"
+                  >
+                    <Icon />
+                    <span className="flex-1">{cat.label}</span>
+                  </button>
+                );
+              })}
+
+              <button
+                onClick={fromSidebar(() => setActiveTab('models'))}
+                className={`hf-sidebar-item ${activeTab === 'models' ? 'active' : ''}`}
+              >
+                <Boxes />
+                <span className="flex-1">AI Models</span>
+                {connectedProviders.length > 0 ? (
+                  <span className="hf-nav-badge text-xs">{connectedProviders.length} active</span>
+                ) : (
+                  <span className="hf-sidebar-pill">Connect</span>
+                )}
+              </button>
+
+              <button onClick={fromSidebar(onToggleHistory)} className="hf-sidebar-item">
+                <Folder />
+                <span className="flex-1">History</span>
+                {historyCount > 0 && <span className="text-sm text-hf-muted">{historyCount}</span>}
+              </button>
+
+              <button onClick={fromSidebar(onOpenSettings)} className="hf-sidebar-item">
+                <Settings />
+                <span className="flex-1">Settings</span>
+              </button>
+            </div>
+          </nav>
+
+          <div className="shrink-0 mx-4 border-t border-white/10" />
+          <div className="shrink-0 px-4 pt-5 pb-6">
+            <p className="text-base font-semibold text-hf-text">
+              {hasAnyKey ? `${connectedProviders.length || 1} provider${connectedProviders.length > 1 ? 's' : ''} active` : 'Bring your ideas to life'}
+            </p>
+            <p className="text-[15px] leading-snug text-hf-muted mt-1">
+              {hasAnyKey ? providersLabel : 'Import an AI provider to create videos, images and audio'}
+            </p>
+            <button onClick={fromSidebar(() => setActiveTab('models'))} className="hf-sidebar-cta mt-5">
+              {hasAnyKey ? 'Manage AI Providers' : 'Import AI Provider'}
+            </button>
+          </div>
+        </aside>
+      </div>
+    )}
+    </>
   );
 }
