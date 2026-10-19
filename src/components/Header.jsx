@@ -211,7 +211,7 @@ export function Header({
           className="absolute left-1/2 -translate-x-1/2"
           title="PuhhfieldAi Studio"
         >
-          <PuhhfieldLogo variant="icon" className="w-8 h-8" />
+          <PuhhfieldLogo variant="full" className="w-8 h-8" textClassName="text-lg font-bold font-display" />
         </button>
       </div>
 
