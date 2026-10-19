@@ -195,7 +195,7 @@ export function Header({
   return (
     <>
     <header className="hf-nav">
-      {/* ─── Mobile bar: sidebar toggle · logo · Import AI Provider ─── */}
+      {/* ─── Mobile bar: sidebar toggle · logo ─── */}
       <div className="lg:hidden relative flex items-center justify-between w-full">
         <button
           onClick={() => setIsSidebarOpen(true)}
@@ -212,14 +212,6 @@ export function Header({
           title="PuhhfieldAi Studio"
         >
           <PuhhfieldLogo variant="icon" className="w-8 h-8" />
-        </button>
-
-        <button
-          onClick={() => setActiveTab('models')}
-          className="hf-btn hf-btn-solid h-8 px-3.5 rounded-full text-[13px]"
-        >
-          <Plus className="w-3.5 h-3.5 hidden min-[400px]:block" />
-          <span>Import AI Provider</span>
         </button>
       </div>
 
