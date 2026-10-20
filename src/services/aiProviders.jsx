@@ -121,7 +121,7 @@ export const AI_PROVIDERS = [
     defaultKeyPlaceholder: 'sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
     models: [
       {
-        id: 'wan-2.7',
+        id: 'wan2.7-t2v',
         name: 'Wan 2.7',
         category: 'video',
         badge: 'TOP',
@@ -161,16 +161,16 @@ export const AI_PROVIDERS = [
         providerName: 'Alibaba'
       },
       {
-        id: 'wanx2.1-t2i-plus',
-        name: 'Wanx 2.1 Image Plus',
+        id: 'wan2.2-t2i-plus',
+        name: 'Wan 2.2 Image Plus',
         category: 'image',
         badge: 'TOP',
         desc: 'Photorealistic text-to-image synthesis with studio lighting',
         providerName: 'Alibaba'
       },
       {
-        id: 'wanx2.1-t2i-turbo',
-        name: 'Wanx 2.1 Image Turbo',
+        id: 'wan2.2-t2i-flash',
+        name: 'Wan 2.2 Image Flash',
         category: 'image',
         badge: 'FAST',
         desc: 'Ultra-fast concept rendering and keyframe creation',

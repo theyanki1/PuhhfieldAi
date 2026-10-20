@@ -130,8 +130,8 @@ export function createAlibabaMiddleware() {
             { id: 'wan2.1-t2v-turbo', name: 'Wan 2.1 Video Turbo (Fast)', type: 'video' },
             { id: 'wan2.1-i2v-plus', name: 'Wan 2.1 Image-to-Video Plus', type: 'video' },
             { id: 'wan2.1-i2v-turbo', name: 'Wan 2.1 Image-to-Video Turbo', type: 'video' },
-            { id: 'wanx2.1-t2i-plus', name: 'Wanx 2.1 Image Plus', type: 'image' },
-            { id: 'wanx2.1-t2i-turbo', name: 'Wanx 2.1 Image Turbo', type: 'image' },
+            { id: 'wan2.2-t2i-plus', name: 'Wan 2.2 Image Plus', type: 'image' },
+            { id: 'wan2.2-t2i-flash', name: 'Wan 2.2 Image Flash', type: 'image' },
             { id: 'qwen-max', name: 'Qwen Max (Prompt Enhancer)', type: 'llm' }
           ]
         }));
@@ -268,7 +268,7 @@ export function createAlibabaMiddleware() {
         return;
       } catch (err) {
         res.writeHead(500, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: 'Audio synthesis request failed: ' + err.message }));
+        res.end(JSON.stringify({ error: 'Audio synthesis request failed: ' + err.message + (err.cause?.code ? ' (' + err.cause.code + ')' : '') }));
         return;
       }
     }
@@ -301,7 +301,7 @@ export function createAlibabaMiddleware() {
         return;
       } catch (err) {
         res.writeHead(500, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: 'Video synthesis request failed: ' + err.message }));
+        res.end(JSON.stringify({ error: 'Video synthesis request failed: ' + err.message + (err.cause?.code ? ' (' + err.cause.code + ')' : '') }));
         return;
       }
     }
@@ -334,7 +334,7 @@ export function createAlibabaMiddleware() {
         return;
       } catch (err) {
         res.writeHead(500, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: 'Image synthesis request failed: ' + err.message }));
+        res.end(JSON.stringify({ error: 'Image synthesis request failed: ' + err.message + (err.cause?.code ? ' (' + err.cause.code + ')' : '') }));
         return;
       }
     }

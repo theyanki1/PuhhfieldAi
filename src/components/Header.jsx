@@ -22,8 +22,8 @@ import { PuhhfieldLogo } from './PuhhfieldLogo';
 
 // Higgsfield nav order: Explore · Image · Video · Audio
 const NAV_CATEGORIES = [
-  { id: 'image', label: 'Image', defaultModel: 'wanx2.1-t2i-plus' },
-  { id: 'video', label: 'Video', defaultModel: 'wan-2.7' },
+  { id: 'image', label: 'Image', defaultModel: 'wan2.2-t2i-plus' },
+  { id: 'video', label: 'Video', defaultModel: 'wan2.7-t2v' },
   { id: 'audio', label: 'Audio', defaultModel: 'cosyvoice-v1' }
 ];
 

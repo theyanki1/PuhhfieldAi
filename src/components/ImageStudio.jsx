@@ -20,7 +20,7 @@ const IMAGE_ASPECTS = [
 export function ImageStudio({ onSendToVideo, onOpenSettings, initialModel, onModelChange }) {
   const hasKey = alibabaConfig.hasValidKey();
   const modelRoles = alibabaConfig.getModelRoles();
-  const [model, setModel] = useState(initialModel || modelRoles.image || 'wanx2.1-t2i-plus');
+  const [model, setModel] = useState(initialModel || modelRoles.image || 'wan2.2-t2i-plus');
 
   React.useEffect(() => {
     if (initialModel) setModel(initialModel);
@@ -81,7 +81,7 @@ export function ImageStudio({ onSendToVideo, onOpenSettings, initialModel, onMod
           </div>
           <h2 className="text-xl font-bold text-white font-display">Connect AI Provider to Start Generating</h2>
           <p className="text-sm text-zinc-400 mt-2 max-w-md leading-relaxed">
-            Import your Alibaba Cloud Model Studio API key in AI Models to unlock Wanx 2.1 Image Plus, Turbo, and Qwen-VL models.
+            Import your Alibaba Cloud Model Studio API key in AI Models to unlock Wan 2.2 Image Plus, Turbo, and Qwen-VL models.
           </p>
           <button
             onClick={onOpenSettings}

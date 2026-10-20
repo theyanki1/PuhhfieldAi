@@ -18,8 +18,8 @@ export const DEFAULT_MODEL_ROLES = {
   video: 'wan2.1-t2v-plus',
   videoFast: 'wan2.1-t2v-turbo',
   videoI2v: 'wan2.1-i2v-plus',
-  image: 'wanx2.1-t2i-plus',
-  imageRetry: 'wanx2.1-t2i-turbo',
+  image: 'wan2.2-t2i-plus',
+  imageRetry: 'wan2.2-t2i-flash',
   audio: 'cosyvoice-v1'
 };
 
@@ -34,8 +34,8 @@ export const ALIBABA_VIDEO_MODELS = [
 ];
 
 export const ALIBABA_IMAGE_MODELS = [
-  { id: 'wanx2.1-t2i-plus', name: 'Wanx 2.1 Image Plus', badge: 'Photoreal', desc: 'Next-gen text-to-image synthesis with photorealism and lighting' },
-  { id: 'wanx2.1-t2i-turbo', name: 'Wanx 2.1 Image Turbo', badge: 'Instant', desc: 'Ultra-fast concept rendering and keyframe creation' },
+  { id: 'wan2.2-t2i-plus', name: 'Wan 2.2 Image Plus', badge: 'Photoreal', desc: 'Next-gen text-to-image synthesis with photorealism and lighting' },
+  { id: 'wan2.2-t2i-flash', name: 'Wan 2.2 Image Flash', badge: 'Instant', desc: 'Ultra-fast concept rendering and keyframe creation' },
   { id: 'wanx-v1', name: 'Wanx Image v1', badge: 'Classic', desc: 'Stable classic text-to-image synthesis' },
   { id: 'qwen-vl-max', name: 'Qwen-VL Max', badge: 'Vision Max', desc: 'Flagship multimodal vision-language model' },
   { id: 'qwen-vl-plus', name: 'Qwen-VL Plus', badge: 'Vision Plus', desc: 'High-speed image understanding and generation' },
@@ -69,6 +69,8 @@ export function getShortModelBadge(modelId, fallback = 'Wan 2.1') {
   if (!modelId) return fallback;
   const lower = modelId.toLowerCase();
   if (lower.includes('wan3') || lower.includes('wan-3') || lower.includes('3.0')) return 'Wan 3.0';
+  if (lower.includes('wan2.7')) return 'Wan 2.7';
+  if (lower.includes('wan2.2')) return 'Wan 2.2';
   if (lower.includes('wan2') || lower.includes('wan-2') || lower.includes('2.1')) return 'Wan 2.1';
   if (lower.includes('wanx2') || lower.includes('wanx-2')) return 'Wanx 2.1';
   if (lower.includes('wanx')) return 'Wanx';
@@ -289,7 +291,7 @@ export async function generateVideo({
 
 // Generate Image (Wanx 2.1 T2I)
 export async function generateImage({
-  model = 'wanx2.1-t2i-plus',
+  model = 'wan2.2-t2i-plus',
   prompt,
   negativePrompt = '',
   size = '1024*1024',
@@ -321,7 +323,7 @@ export async function generateImage({
     }
   };
 
-  onProgress?.({ status: 'SUBMITTING', progress: 10, message: 'Dispatching to Alibaba Wanx 2.1...' });
+  onProgress?.({ status: 'SUBMITTING', progress: 10, message: 'Dispatching to Alibaba Wan 2.2...' });
 
   const res = await fetch('/api/alibaba/image-synthesis', {
     method: 'POST',

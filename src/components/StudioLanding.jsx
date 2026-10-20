@@ -95,8 +95,8 @@ export function StudioLanding({
   const hasAnyProvider = connectedProviders.length > 0 || alibabaConfig.hasValidKey();
 
   // Selected Models per Category
-  const [videoModel, setVideoModel] = useState('wan-2.7');
-  const [imageModel, setImageModel] = useState('wanx2.1-t2i-plus');
+  const [videoModel, setVideoModel] = useState('wan2.7-t2v');
+  const [imageModel, setImageModel] = useState('wan2.2-t2i-plus');
   const [audioModel, setAudioModel] = useState('cosyvoice-v1');
 
   // Prompts
@@ -204,7 +204,7 @@ export function StudioLanding({
     if (modeId === 'i2v' && !videoModel.includes('i2v')) {
       setVideoModel('wan2.1-i2v-plus');
     } else if (modeId === 't2v' && videoModel.includes('i2v')) {
-      setVideoModel('wan-2.7');
+      setVideoModel('wan2.7-t2v');
     }
   };
 
@@ -264,6 +264,11 @@ export function StudioLanding({
       setErrorMessage(`Please enter a prompt for ${headingWord.toLowerCase()} generation.`);
       return;
     }
+    const modelProvider = AI_PROVIDERS.find(p => p.models.some(m => m.id === activeModelId));
+    if (modelProvider && modelProvider.id !== 'alibaba') {
+      setErrorMessage(`${currentModelObj?.name || activeModelId} (${modelProvider.name}) can't generate yet — only Alibaba models are wired to a generator. Pick an Alibaba model.`);
+      return;
+    }
     if (activeMode === 'i2v' && !firstFrameImage) {
       setErrorMessage('Please upload a starting image for Image-to-Video animation.');
       return;
@@ -293,7 +298,9 @@ export function StudioLanding({
         generationStorage.save(result);
       } else if (currentCategory === 'image') {
         setGenerationProgress({ status: 'PROCESSING', progress: 40, message: 'Synthesizing high-res image...' });
-        const size = activeAspect ? (activeAspect.id === '1:1' ? '1024*1024' : activeAspect.sizeWan) : '1024*1024';
+        // Wan 2.2 image models need 512–1440px per side (video 4:3 is 832*480)
+        const imageSizes = { '1:1': '1024*1024', '4:3': '1024*768' };
+        const size = activeAspect ? (imageSizes[activeAspect.id] || activeAspect.sizeWan) : '1024*1024';
         const result = await generateImage({
           model: imageModel,
           prompt: imagePrompt,
