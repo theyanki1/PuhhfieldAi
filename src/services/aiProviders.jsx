@@ -257,7 +257,7 @@ export const AI_PROVIDERS = [
         providerName: 'OpenAI'
       },
       {
-        id: 'gpt-image-2.0',
+        id: 'gpt-image-2',
         name: 'GPT Image 2.0',
         category: 'image',
         badge: 'TOP',

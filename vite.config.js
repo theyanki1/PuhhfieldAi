@@ -2,6 +2,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vite'
 import { createAlibabaMiddleware } from './server/alibabaMiddleware.js'
+import { createOpenAIMiddleware } from './server/openaiMiddleware.js'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -14,6 +15,12 @@ export default defineConfig({
       name: 'alibaba-modelstudio-proxy',
       configureServer(server) {
         server.middlewares.use(createAlibabaMiddleware());
+      }
+    },
+    {
+      name: 'openai-proxy',
+      configureServer(server) {
+        server.middlewares.use(createOpenAIMiddleware());
       }
     }
   ],

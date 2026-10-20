@@ -45,6 +45,7 @@ import {
   ProviderLogos
 } from '../services/aiProviders';
 import { ASPECT_RATIOS, CAMERA_PRESETS, STYLE_PRESETS } from '../data/curatedPresets';
+import { generateOpenAIImage } from '../services/openaiApi';
 import { VideoPlayer } from './VideoPlayer';
 
 const MODES = [
@@ -265,8 +266,9 @@ export function StudioLanding({
       return;
     }
     const modelProvider = AI_PROVIDERS.find(p => p.models.some(m => m.id === activeModelId));
-    if (modelProvider && modelProvider.id !== 'alibaba') {
-      setErrorMessage(`${currentModelObj?.name || activeModelId} (${modelProvider.name}) can't generate yet — only Alibaba models are wired to a generator. Pick an Alibaba model.`);
+    const isOpenAIImage = modelProvider?.id === 'openai' && currentCategory === 'image';
+    if (modelProvider && modelProvider.id !== 'alibaba' && !isOpenAIImage) {
+      setErrorMessage(`${currentModelObj?.name || activeModelId} (${modelProvider.name}) can't generate yet — only Alibaba models and OpenAI images are wired to a generator.`);
       return;
     }
     if (activeMode === 'i2v' && !firstFrameImage) {
@@ -296,6 +298,19 @@ export function StudioLanding({
         });
         setCurrentResult(result);
         generationStorage.save(result);
+      } else if (isOpenAIImage) {
+        setGenerationProgress({ status: 'PROCESSING', progress: 40, message: 'Rendering with OpenAI...' });
+        const { historyUrl, ...result } = await generateOpenAIImage({
+          model: imageModel,
+          prompt: imagePrompt,
+          aspectRatio
+        });
+        setCurrentResult(result);
+        try {
+          generationStorage.save({ ...result, url: historyUrl || result.url });
+        } catch (storageErr) {
+          console.warn('History storage full, skipped saving:', storageErr);
+        }
       } else if (currentCategory === 'image') {
         setGenerationProgress({ status: 'PROCESSING', progress: 40, message: 'Synthesizing high-res image...' });
         // Wan 2.2 image models need 512–1440px per side (video 4:3 is 832*480)
